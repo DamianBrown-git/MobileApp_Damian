@@ -22,8 +22,45 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => ProfilePageState();
+}
+
+class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
+  final List<AppLifecycleState> stateHistory = <AppLifecycleState>[];
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState called — observer added');
+    WidgetsBinding.instance.addObserver(this);
+  }
+  @override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+  setState(() {
+    stateHistory.add(state);
+  });
+
+  if (state == AppLifecycleState.resumed) {
+    print('AppLifecycleState: resumed - The application is visible and responding to user input.');
+  } else if (state == AppLifecycleState.inactive) {
+    print('AppLifecycleState: inactive - The application is in an inactive state and is not receiving user input.');
+  } else if (state == AppLifecycleState.paused) {
+    print('AppLifecycleState: paused - The application is not currently visible to the user, not responding to user input, and running in the background.');
+  } else if (state == AppLifecycleState.detached) {
+    print('AppLifecycleState: detached - The application is still hosted on a flutter engine but is detached from any host views.');
+  } else if (state == AppLifecycleState.hidden) {
+    print('AppLifecycleState: hidden - The application is not visible to the user, but still running.');
+  }
+}
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +72,13 @@ class ProfilePage extends StatelessWidget {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      drawer: const NavigationDrawer(), // 👈 consistent hamburger on every scree
-      
+      drawer: const NavigationDrawer(),
+
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [ 
+          children: [
             // Profile Image Container with Circle Avatar
             Center(
               child: Container(
@@ -56,15 +93,12 @@ class ProfilePage extends StatelessWidget {
                     ),
                     fit: BoxFit.cover,
                   ),
-                  border: Border.all(
-                    color: Colors.blue,
-                    width: 3,
-                  ),
+                  border: Border.all(color: Colors.blue, width: 3),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Name
             Center(
               child: Text(
@@ -77,7 +111,7 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            
+
             // Title/Description
             Center(
               child: Text(
@@ -90,56 +124,40 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Location
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.location_on,
-                  color: Colors.blue[600],
-                  size: 22,
-                ),
+                Icon(Icons.location_on, color: Colors.blue[600], size: 22),
                 const SizedBox(width: 8),
                 Text(
                   '🇺🇸 Atlanta, GA, USA',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[700],
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            
+
             // Email
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.email,
-                  color: Colors.blue[600],
-                  size: 22,
-                ),
+                Icon(Icons.email, color: Colors.blue[600], size: 22),
                 const SizedBox(width: 8),
                 Text(
                   'db00444@my.westga.edu',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[700],
-                    
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                 ),
               ],
             ),
             const SizedBox(height: 40),
-            
+
             // Follow Me Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // Add follow functionality
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Follow request sent!'),
@@ -150,10 +168,7 @@ class ProfilePage extends StatelessWidget {
                 icon: const Icon(Icons.person_add, size: 20),
                 label: const Text(
                   'Follow me please',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -167,13 +182,12 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             // Send Message Button
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  // Add message functionality
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Message composer opened!'),
@@ -184,10 +198,7 @@ class ProfilePage extends StatelessWidget {
                 icon: const Icon(Icons.message, size: 20),
                 label: const Text(
                   'Send me a message',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.blue,
@@ -199,10 +210,9 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             const Spacer(),
-            
-            // Bottom hint text (optional)
+
             Center(
               child: Text(
                 'Connect with me!',
