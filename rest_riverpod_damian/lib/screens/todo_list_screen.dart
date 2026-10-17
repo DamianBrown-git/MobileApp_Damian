@@ -67,8 +67,8 @@ class _TodoCard extends ConsumerWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6),
       elevation: 2,
-      color: const Color(0xFFF8F0FA), // light pink-lavender card
-      surfaceTintColor: Colors.transparent, // removes the gray tint
+      color: const Color(0xFFF8F0FA), 
+      surfaceTintColor: Colors.transparent,
       shadowColor: Colors.black54,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
