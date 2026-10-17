@@ -12,12 +12,12 @@ class TodoListScreen extends ConsumerWidget {
     final todosAsync = ref.watch(todoListProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF1FA), // soft light background
+      backgroundColor: const Color(0xFFEEF1FA), 
       appBar: AppBar(
         title: const Text('Todo List'),
-        backgroundColor: const Color(0xFFD0BCFF), // stronger purple
+        backgroundColor: const Color(0xFFD0BCFF), 
         surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0, // keeps color from changing on scroll
+        scrolledUnderElevation: 0, 
       ),
       body: todosAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
