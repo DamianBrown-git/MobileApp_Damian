@@ -12,9 +12,12 @@ class TodoListScreen extends ConsumerWidget {
     final todosAsync = ref.watch(todoListProvider);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFEEF1FA), // soft light background
       appBar: AppBar(
         title: const Text('Todo List'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: const Color(0xFFD0BCFF), // stronger purple
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0, // keeps color from changing on scroll
       ),
       body: todosAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -64,7 +67,9 @@ class _TodoCard extends ConsumerWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6),
       elevation: 2,
-      color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.25),
+      color: const Color(0xFFF8F0FA), // light pink-lavender card
+      surfaceTintColor: Colors.transparent, // removes the gray tint
+      shadowColor: Colors.black54,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
         contentPadding:
@@ -82,10 +87,13 @@ class _TodoCard extends ConsumerWidget {
           style: TextStyle(
             fontSize: 18,
             decoration: done ? TextDecoration.lineThrough : null,
-            color: done ? const Color.fromARGB(255, 0, 0, 0) : null,
+            color: done ? Colors.grey.shade600 : const Color(0xFF1D1B20),
           ),
         ),
-        subtitle: Text('Task ID: ${todo.id} | User ID: ${todo.userId}'),
+        subtitle: Text(
+          'Task ID: ${todo.id} | User ID: ${todo.userId}',
+          style: TextStyle(color: Colors.grey.shade800),
+        ),
         trailing: Checkbox(
           value: done,
           onChanged: (_) =>
