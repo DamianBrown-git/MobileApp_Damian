@@ -1,0 +1,191 @@
+Prompt:
+In this lab, you will use your favorite GenAI (GPT, Copilot, Gemini, Claude etc.) model to generate API endpoints (all CRUD operations) for a system that tracks vehicle manufacturers and all the vehicles that they manufacture.  
+The system use in-memory database to keep track of manufacturers and their vehicles.  
+The API endpoints must be developed based on FastAPI. 
+Also, uv porject structure must be used for the project.  
+Inside your main project folder (MobileApp_yourname) that you have connected to git in a previous assignment, create a project for the generated code using uv commands.  
+Check the REST lecture slides part 3 for details of how to do it.  
+Inside that project add folder named "genai_code" and add the generated code along with the prompt you used in a text file inside that folder.
+Go to your VSCode and open this project and add the AI generated code into this project.  
+Fix any issues, and then run it with "uv" to make sure it works as expected.  
+Stage, commit, and then publish this project to your git repo.
+
+
+
+Generated code:
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Dict
+
+app = FastAPI(title="Vehicle Manufacturer API")
+
+
+# ----------------------
+# Models
+# ----------------------
+
+class Manufacturer(BaseModel):
+    id: int
+    name: str
+    country: str
+
+
+class Vehicle(BaseModel):
+    id: int
+    manufacturer_id: int
+    model: str
+    year: int
+
+
+# ----------------------
+# In-Memory Databases
+# ----------------------
+
+manufacturers: Dict[int, Manufacturer] = {}
+vehicles: Dict[int, Vehicle] = {}
+
+
+# ======================
+# Manufacturer Endpoints
+# ======================
+
+@app.post("/manufacturers/")
+def create_manufacturer(manufacturer: Manufacturer):
+
+    if manufacturer.id in manufacturers:
+        raise HTTPException(
+            status_code=400,
+            detail="Manufacturer ID already exists"
+        )
+
+    manufacturers[manufacturer.id] = manufacturer
+    return manufacturer
+
+
+@app.get("/manufacturers/")
+def get_manufacturers():
+    return list(manufacturers.values())
+
+
+@app.get("/manufacturers/{manufacturer_id}")
+def get_manufacturer(manufacturer_id: int):
+
+    if manufacturer_id not in manufacturers:
+        raise HTTPException(
+            status_code=404,
+            detail="Manufacturer not found"
+        )
+
+    return manufacturers[manufacturer_id]
+
+
+@app.put("/manufacturers/{manufacturer_id}")
+def update_manufacturer(
+    manufacturer_id: int,
+    updated_manufacturer: Manufacturer
+):
+
+    if manufacturer_id not in manufacturers:
+        raise HTTPException(
+            status_code=404,
+            detail="Manufacturer not found"
+        )
+
+    manufacturers[manufacturer_id] = updated_manufacturer
+    return updated_manufacturer
+
+
+@app.delete("/manufacturers/{manufacturer_id}")
+def delete_manufacturer(manufacturer_id: int):
+
+    if manufacturer_id not in manufacturers:
+        raise HTTPException(
+            status_code=404,
+            detail="Manufacturer not found"
+        )
+
+    del manufacturers[manufacturer_id]
+
+    return {
+        "message": "Manufacturer deleted successfully"
+    }
+
+
+# ======================
+# Vehicle Endpoints
+# ======================
+
+@app.post("/vehicles/")
+def create_vehicle(vehicle: Vehicle):
+
+    if vehicle.id in vehicles:
+        raise HTTPException(
+            status_code=400,
+            detail="Vehicle ID already exists"
+        )
+
+    if vehicle.manufacturer_id not in manufacturers:
+        raise HTTPException(
+            status_code=404,
+            detail="Manufacturer does not exist"
+        )
+
+    vehicles[vehicle.id] = vehicle
+
+    return vehicle
+
+
+@app.get("/vehicles/")
+def get_vehicles():
+    return list(vehicles.values())
+
+
+@app.get("/vehicles/{vehicle_id}")
+def get_vehicle(vehicle_id: int):
+
+    if vehicle_id not in vehicles:
+        raise HTTPException(
+            status_code=404,
+            detail="Vehicle not found"
+        )
+
+    return vehicles[vehicle_id]
+
+
+@app.put("/vehicles/{vehicle_id}")
+def update_vehicle(
+    vehicle_id: int,
+    updated_vehicle: Vehicle
+):
+
+    if vehicle_id not in vehicles:
+        raise HTTPException(
+            status_code=404,
+            detail="Vehicle not found"
+        )
+
+    if updated_vehicle.manufacturer_id not in manufacturers:
+        raise HTTPException(
+            status_code=404,
+            detail="Manufacturer does not exist"
+        )
+
+    vehicles[vehicle_id] = updated_vehicle
+
+    return updated_vehicle
+
+
+@app.delete("/vehicles/{vehicle_id}")
+def delete_vehicle(vehicle_id: int):
+
+    if vehicle_id not in vehicles:
+        raise HTTPException(
+            status_code=404,
+            detail="Vehicle not found"
+        )
+
+    del vehicles[vehicle_id]
+
+    return {
+        "message": "Vehicle deleted successfully"
+    }
