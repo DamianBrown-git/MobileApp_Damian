@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/main.dart';
+import 'package:rest_riverpod_damian/main.dart';
 
 void main() {
   testWidgets('Home screen shows navigation button', (tester) async {
